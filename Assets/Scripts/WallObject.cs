@@ -49,6 +49,7 @@ public class WallObject : MonoBehaviour
     void Start()
     {
         _currentHealth = _initialHealth;
+        GetComponent<Rigidbody2D>().mass = 0.13f * _initialHealth;
     }
 
     /* Called when an object hits this */
