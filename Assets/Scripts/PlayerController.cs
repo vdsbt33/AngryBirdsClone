@@ -11,9 +11,11 @@ public class PlayerController : MonoBehaviour
     public float mouseDragRadius = 3f;
     public LayerMask playerSelectedAmmo;
     public float dragSmoothness = 1.0f;
+    public float bulletForceMultiplier = 1.0f;
 
     private bool isDragging = false;
     private Vector2 startingPosition;
+    private bool isLaunching = false;
 
     // Start is called before the first frame update
     void Start()
@@ -41,14 +43,17 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             /* If dragging, launches bullet */
-            //if (isDragging == true)
-            //{
-            //    Rigidbody2D rb = playerBullet.GetComponentInParent<Rigidbody2D>();
-            //    rb.simulated = true;
-            //    rb.AddForce(new Vector2(rb.position.x - startingPosition.x, rb.position.y - startingPosition.y));
-            //}
+            if (isDragging == true)
+            {
+                Rigidbody2D rb = playerBullet.GetComponentInParent<Rigidbody2D>();
+                rb.gravityScale = 0.8f;
+                rb.AddForce(new Vector2((startingPosition.x - rb.position.x) * bulletForceMultiplier, (startingPosition.y - rb.position.y) * bulletForceMultiplier));
+                isLaunching = true;
+            }
             isDragging = false;
-            LookAtPoint(new Vector3(startingPosition.x + 10f, startingPosition.y, 0));
+            if (!isLaunching) { 
+                LookAtPoint(new Vector3(startingPosition.x + 10f, startingPosition.y, 0));
+            }
             print("mouse up");
         }
     }
@@ -84,7 +89,9 @@ public class PlayerController : MonoBehaviour
             LookAtPoint(startingPosition);
             return;
         }
-        playerBullet.position = startingPosition;
+        if (!isLaunching) { 
+            playerBullet.position = startingPosition;
+        }
         return;
     }
 
