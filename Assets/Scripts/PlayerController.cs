@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.SceneManagement;
+
 public class PlayerController : MonoBehaviour
 {
     /* Public variables */
@@ -32,7 +34,7 @@ public class PlayerController : MonoBehaviour
             if (ClickedBullet())
             {
                 isDragging = true;
-                print("mouse down");
+                //print("mouse down");
             }
         }
         /* Mouse Left (press and hold) */
@@ -54,7 +56,11 @@ public class PlayerController : MonoBehaviour
             if (!isLaunching) { 
                 LookAtPoint(new Vector3(startingPosition.x + 10f, startingPosition.y, 0));
             }
-            print("mouse up");
+            //print("mouse up");
+        }
+        if (Input.GetKey(KeyCode.R))
+        {
+            SceneManager.LoadScene("TestingScene");
         }
     }
 
@@ -101,7 +107,7 @@ public class PlayerController : MonoBehaviour
         Vector3 difference = targetPoint - playerBullet.position;
         float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
         playerBullet.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
-        print(string.Format("Looking at point {0}. Diff = {1}", targetPoint, difference));
+        //print(string.Format("Looking at point {0}. Diff = {1}", targetPoint, difference));
     }
 
 }
