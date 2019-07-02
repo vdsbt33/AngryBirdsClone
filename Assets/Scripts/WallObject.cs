@@ -27,8 +27,8 @@ public class WallObject : MonoBehaviour
         }
     }
 
-    private int _currentHealth;
-    public int CurrentHealth
+    private float _currentHealth;
+    public float CurrentHealth
     {
         get
         {
@@ -49,13 +49,14 @@ public class WallObject : MonoBehaviour
     void Start()
     {
         _currentHealth = _initialHealth;
-        GetComponent<Rigidbody2D>().mass = 0.13f * _initialHealth;
+        GetComponent<Rigidbody2D>().mass = 0.13f * CurrentHealth;
     }
 
     /* Called when an object hits this */
-    public void HitByObject(Vector2 velocity)
+    public void HitByObject(Vector2 velocity, float objectMass)
     {
-        CurrentHealth = 0;
+        CurrentHealth -= (velocity.x * objectMass) * 5f;
+        print("HP: " + CurrentHealth);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -67,8 +68,7 @@ public class WallObject : MonoBehaviour
             print("GameObject name: " + hit.transform.gameObject.name);
             if (hit.transform.gameObject.name == "PlayerStart")
             {
-                HitByObject(Vector2.zero);
-                print("COLLISION! HP: " + CurrentHealth);
+                HitByObject(collision.collider.attachedRigidbody.velocity, hit.rigidbody.mass);
             }
         }
         
