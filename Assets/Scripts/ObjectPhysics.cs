@@ -15,4 +15,10 @@ public class ObjectPhysics : MonoBehaviour
     {
         
     }
+
+    /* Detects collisions between this object and another one */
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        
+    }
 }

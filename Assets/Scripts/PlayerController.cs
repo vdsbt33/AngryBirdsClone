@@ -14,10 +14,36 @@ public class PlayerController : MonoBehaviour
     public LayerMask playerSelectedAmmo;
     public float dragSmoothness = 1.0f;
     public float bulletForceMultiplier = 1.0f;
+    public float gravityScale = 0.7f;
 
-    private bool isDragging = false;
+    private enum BulletState
+    {
+        Waiting = 0,
+        Aiming = 1,
+        Launching = 2,
+        Collided = 3
+    }
+
+    private BulletState _state;
+    private BulletState State
+    {
+        get
+        {
+            return _state;
+        }
+        set
+        {
+            if (value == BulletState.Waiting)
+            {
+                playerBullet.position = startingPosition;
+                playerBullet.gameObject.GetComponent<Rigidbody2D>().gravityScale = 0f;
+                LookAtPoint(new Vector3(startingPosition.x + 10f, startingPosition.y, 0));
+            }
+            _state = value;
+        }
+    }
+
     private Vector2 startingPosition;
-    private bool isLaunching = false;
 
     // Start is called before the first frame update
     void Start()
@@ -31,9 +57,9 @@ public class PlayerController : MonoBehaviour
         /* Mouse Left Down (1 frame) */
         if (Input.GetMouseButtonDown(0))
         {
-            if (ClickedBullet())
+            if (ClickedBullet() && State == BulletState.Waiting)
             {
-                isDragging = true;
+                State = BulletState.Aiming;
                 //print("mouse down");
             }
         }
@@ -45,15 +71,15 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             /* If dragging, launches bullet */
-            if (isDragging == true)
+            if (State == BulletState.Aiming)
             {
                 Rigidbody2D rb = playerBullet.GetComponentInParent<Rigidbody2D>();
-                rb.gravityScale = 0.8f;
+                rb.gravityScale = gravityScale;
                 rb.AddForce(new Vector2((startingPosition.x - rb.position.x) * bulletForceMultiplier, (startingPosition.y - rb.position.y) * bulletForceMultiplier));
-                isLaunching = true;
+                State = BulletState.Launching;
             }
-            isDragging = false;
-            if (!isLaunching) { 
+            
+            if (State == BulletState.Waiting) { 
                 LookAtPoint(new Vector3(startingPosition.x + 10f, startingPosition.y, 0));
             }
             //print("mouse up");
@@ -86,7 +112,8 @@ public class PlayerController : MonoBehaviour
     /* Update good for physics apperently */
     void FixedUpdate()
     {
-        if (isDragging)
+        gameObject.GetComponent<DebugController>().SetDebugText("Player State: " + State);
+        if (State == BulletState.Aiming)
         {
             var position = Vector2.Lerp(playerBullet.position, GetMousePosition(), dragSmoothness * Time.deltaTime);
             var allowedPos = position - startingPosition;
@@ -95,8 +122,14 @@ public class PlayerController : MonoBehaviour
             LookAtPoint(startingPosition);
             return;
         }
-        if (!isLaunching) { 
-            playerBullet.position = startingPosition;
+        if (State == BulletState.Collided) {
+            State = BulletState.Waiting;
+        }
+        /* Makes bullet rotate to direction of movement */
+        else if (State == BulletState.Launching)
+        {
+            /* Stops launching and rotation if player collides */
+            LookAtPoint(new Vector2(playerBullet.transform.position.x, playerBullet.transform.position.y) + playerBullet.gameObject.GetComponent<Rigidbody2D>().velocity);
         }
         return;
     }
@@ -108,6 +141,15 @@ public class PlayerController : MonoBehaviour
         float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
         playerBullet.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
         //print(string.Format("Looking at point {0}. Diff = {1}", targetPoint, difference));
+    }
+
+    /* Called on any collision between this object and another */
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        /* Will need to add this to the Bullet instead! */
+        /* Ceases 'launching' state if it collides with anything */
+        print("Bullet collided!");
+        State = BulletState.Collided;
     }
 
 }

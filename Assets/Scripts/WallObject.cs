@@ -55,17 +55,16 @@ public class WallObject : MonoBehaviour
     /* Called when an object hits this */
     public void HitByObject(Vector2 velocity, float objectMass)
     {
-        CurrentHealth -= (velocity.x * objectMass) * 5f;
-        print("HP: " + CurrentHealth);
+        CurrentHealth -= (velocity.x * 7) * objectMass;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(collision.collider.transform.position, Vector2.zero, 0f);
-        print("Collider name: " + collision.collider.name + " |otherCollider name: " + collision.otherCollider.name);
+        //print("Collider name: " + collision.collider.name + " |otherCollider name: " + collision.otherCollider.name);
         foreach (RaycastHit2D hit in hits)
         {
-            print("GameObject name: " + hit.transform.gameObject.name);
+            //print("GameObject name: " + hit.transform.gameObject.name);
             if (hit.transform.gameObject.name == "PlayerStart")
             {
                 HitByObject(collision.collider.attachedRigidbody.velocity, hit.rigidbody.mass);
