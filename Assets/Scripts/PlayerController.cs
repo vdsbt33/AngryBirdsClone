@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
@@ -16,7 +15,7 @@ public class PlayerController : MonoBehaviour
     public float bulletForceMultiplier = 1.0f;
     public float gravityScale = 0.7f;
 
-    private enum BulletState
+    public enum BulletState
     {
         Waiting = 0,
         Aiming = 1,
@@ -25,7 +24,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private BulletState _state;
-    private BulletState State
+    public BulletState State
     {
         get
         {
@@ -36,7 +35,9 @@ public class PlayerController : MonoBehaviour
             if (value == BulletState.Waiting)
             {
                 playerBullet.position = startingPosition;
+                playerBullet.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 playerBullet.gameObject.GetComponent<Rigidbody2D>().gravityScale = 0f;
+                playerBullet.gameObject.GetComponent<Rigidbody2D>().angularVelocity = 0f;
                 LookAtPoint(new Vector3(startingPosition.x + 10f, startingPosition.y, 0));
             }
             _state = value;
@@ -49,6 +50,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         startingPosition = playerBullet.position;
+        playerBullet.GetComponent<ObjectPhysics>().playerController = this;
     }
 
     /* Gets player click/hold */
