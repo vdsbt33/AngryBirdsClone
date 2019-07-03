@@ -23,8 +23,7 @@ public class PlayerController : MonoBehaviour
         Waiting = 0,
         Aiming = 1,
         Launching = 2,
-        Collided = 3,
-        Ended
+        Collided = 3
     }
 
     private BulletState _state;
