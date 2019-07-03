@@ -21,7 +21,7 @@ public class WallObject : MonoBehaviour
                 return 10;
             } else if (materialType == MaterialType.Stone)
             {
-                return 30;
+                return 20;
             }
             return -1;
         }

@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public float dragSmoothness = 1.0f;
     public float bulletForceMultiplier = 1.0f;
     public float gravityScale = 0.7f;
+    public float resetWaitInSeconds = 2f;
 
     public enum BulletState
     {
@@ -34,11 +35,15 @@ public class PlayerController : MonoBehaviour
         {
             if (value == BulletState.Waiting)
             {
+
                 playerBullet.position = startingPosition;
                 playerBullet.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 playerBullet.gameObject.GetComponent<Rigidbody2D>().gravityScale = 0f;
                 playerBullet.gameObject.GetComponent<Rigidbody2D>().angularVelocity = 0f;
                 LookAtPoint(new Vector3(startingPosition.x + 10f, startingPosition.y, 0));
+            } else if (value == BulletState.Collided)
+            {
+                waitTime = Time.time;
             }
             _state = value;
         }
@@ -51,6 +56,7 @@ public class PlayerController : MonoBehaviour
     {
         startingPosition = playerBullet.position;
         playerBullet.GetComponent<ObjectPhysics>().playerController = this;
+        waitTime = Time.time;
     }
 
     /* Gets player click/hold */
@@ -112,6 +118,7 @@ public class PlayerController : MonoBehaviour
     }
 
     /* Update good for physics apperently */
+    float waitTime = 0f;
     void FixedUpdate()
     {
         gameObject.GetComponent<DebugController>().SetDebugText("Player State: " + State);
@@ -125,7 +132,11 @@ public class PlayerController : MonoBehaviour
             return;
         }
         if (State == BulletState.Collided) {
-            State = BulletState.Waiting;
+            //print(string.Format("Time.time: {0} | waitTime: {1} | resetWaitInSeconds: {2}", Time.time, waitTime, resetWaitInSeconds));
+            /* Resets player to waiting after X seconds */
+            if (Time.time == waitTime + resetWaitInSeconds) { 
+                State = BulletState.Waiting;
+            }
         }
         /* Makes bullet rotate to direction of movement */
         else if (State == BulletState.Launching)
