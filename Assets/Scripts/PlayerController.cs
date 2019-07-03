@@ -16,12 +16,15 @@ public class PlayerController : MonoBehaviour
     public float gravityScale = 0.7f;
     public float resetWaitInSeconds = 2f;
 
+    public GameController gameController;
+
     public enum BulletState
     {
         Waiting = 0,
         Aiming = 1,
         Launching = 2,
-        Collided = 3
+        Collided = 3,
+        Ended
     }
 
     private BulletState _state;
@@ -35,7 +38,7 @@ public class PlayerController : MonoBehaviour
         {
             if (value == BulletState.Waiting)
             {
-
+                print("Should have reset");
                 playerBullet.position = startingPosition;
                 playerBullet.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 playerBullet.gameObject.GetComponent<Rigidbody2D>().gravityScale = 0f;
@@ -62,6 +65,9 @@ public class PlayerController : MonoBehaviour
     /* Gets player click/hold */
     void Update()
     {
+        if (gameController.EnemyCount() == 0) {
+            return;
+        }
         /* Mouse Left Down (1 frame) */
         if (Input.GetMouseButtonDown(0))
         {
@@ -154,15 +160,6 @@ public class PlayerController : MonoBehaviour
         float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
         playerBullet.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
         //print(string.Format("Looking at point {0}. Diff = {1}", targetPoint, difference));
-    }
-
-    /* Called on any collision between this object and another */
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        /* Will need to add this to the Bullet instead! */
-        /* Ceases 'launching' state if it collides with anything */
-        print("Bullet collided!");
-        State = BulletState.Collided;
     }
 
 }
