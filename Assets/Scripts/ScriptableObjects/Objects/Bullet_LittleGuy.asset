@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Bullet_LittleGuy
+  m_EditorClassIdentifier: Assembly-CSharp::BulletAmmo
+  bulletName: Little Guy
+  bulletMass: 1
+  bulletVelocityMultiplier: 1
+  bulletScale: {x: 0.7, y: 0.7}
+  bulletSprite: {fileID: 21300000, guid: 8c9524efbbc85594db2a39c1170f562c, type: 3}

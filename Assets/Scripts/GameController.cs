@@ -5,7 +5,6 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public Transform objectivesParent;
-    int enemyCount = -1;
     
     // Start is called before the first frame update
     void Start()

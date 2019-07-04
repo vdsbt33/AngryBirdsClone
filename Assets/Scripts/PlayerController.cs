@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     /* Public variables */
-    public Transform playerBullet;
+    public Vector2 startingPoint;
+    private Transform playerBullet; // Currently selected Player Bullet
 
     public Vector2 shootPositionOffset = new Vector2(0, 0);
     public float mouseDragRadius = 3f;
@@ -15,6 +16,17 @@ public class PlayerController : MonoBehaviour
     public float bulletForceMultiplier = 1.0f;
     public float gravityScale = 0.7f;
     public float resetWaitInSeconds = 2f;
+
+    public List<GameObject> bulletList;
+    private int startingProjectileCount;
+
+    private GameObject GetCurrentBullet
+    {
+        get
+        {
+            return bulletList.Count > 0 ? bulletList[0] : null;
+        }
+    }
 
     public GameController gameController;
 
@@ -38,11 +50,6 @@ public class PlayerController : MonoBehaviour
             if (value == BulletState.Waiting)
             {
                 print("Should have reset");
-                playerBullet.position = startingPosition;
-                playerBullet.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                playerBullet.gameObject.GetComponent<Rigidbody2D>().gravityScale = 0f;
-                playerBullet.gameObject.GetComponent<Rigidbody2D>().angularVelocity = 0f;
-                LookAtPoint(new Vector3(startingPosition.x + 10f, startingPosition.y, 0));
             } else if (value == BulletState.Collided)
             {
                 waitTime = Time.time;
@@ -51,13 +58,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private Vector2 startingPosition;
 
     // Start is called before the first frame update
     void Start()
     {
-        startingPosition = playerBullet.position;
-        playerBullet.GetComponent<ObjectPhysics>().playerController = this;
+        startingProjectileCount = bulletList.Count;
+        PostShot();
         waitTime = Time.time;
     }
 
@@ -88,12 +94,12 @@ public class PlayerController : MonoBehaviour
             {
                 Rigidbody2D rb = playerBullet.GetComponentInParent<Rigidbody2D>();
                 rb.gravityScale = gravityScale;
-                rb.AddForce(new Vector2((startingPosition.x - rb.position.x) * bulletForceMultiplier, (startingPosition.y - rb.position.y) * bulletForceMultiplier));
+                rb.AddForce(new Vector2((startingPoint.x - rb.position.x) * bulletForceMultiplier, (startingPoint.y - rb.position.y) * bulletForceMultiplier));
                 State = BulletState.Launching;
             }
             
             if (State == BulletState.Waiting) { 
-                LookAtPoint(new Vector3(startingPosition.x + 10f, startingPosition.y, 0));
+                LookAtPoint(new Vector3(startingPoint.x + 10f, startingPoint.y, 0));
             }
             //print("mouse up");
         }
@@ -130,16 +136,17 @@ public class PlayerController : MonoBehaviour
         if (State == BulletState.Aiming)
         {
             var position = Vector2.Lerp(playerBullet.position, GetMousePosition(), dragSmoothness * Time.deltaTime);
-            var allowedPos = position - startingPosition;
-            //playerBullet.position = new Vector2(Mathf.Clamp(position.x, startingPosition.x - mouseDragRadius, startingPosition.x + mouseDragRadius), Mathf.Clamp(position.y, startingPosition.y - mouseDragRadius, startingPosition.y + mouseDragRadius));
-            playerBullet.position = startingPosition + Vector2.ClampMagnitude(allowedPos, mouseDragRadius);
-            LookAtPoint(startingPosition);
+            var allowedPos = position - startingPoint;
+            //playerBullet.position = new Vector2(Mathf.Clamp(position.x, startingPoint.x - mouseDragRadius, startingPoint.x + mouseDragRadius), Mathf.Clamp(position.y, startingPoint.y - mouseDragRadius, startingPoint.y + mouseDragRadius));
+            playerBullet.position = startingPoint + Vector2.ClampMagnitude(allowedPos, mouseDragRadius);
+            LookAtPoint(startingPoint);
             return;
         }
         if (State == BulletState.Collided) {
             //print(string.Format("Time.time: {0} | waitTime: {1} | resetWaitInSeconds: {2}", Time.time, waitTime, resetWaitInSeconds));
             /* Resets player to waiting after X seconds */
-            if (Time.time == waitTime + resetWaitInSeconds) { 
+            if (Time.time == waitTime + resetWaitInSeconds) {
+                PostShot();
                 State = BulletState.Waiting;
             }
         }
@@ -159,6 +166,32 @@ public class PlayerController : MonoBehaviour
         float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
         playerBullet.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
         //print(string.Format("Looking at point {0}. Diff = {1}", targetPoint, difference));
+    }
+
+    /* Switches ammo after shot */
+    void PostShot()
+    {
+        if (State == BulletState.Collided)
+        {
+            Destroy(playerBullet.gameObject, 2f);
+            bulletList.RemoveAt(0);
+        }
+
+        /* Moves bullet to starting position */
+        if (GetCurrentBullet != null)
+        {
+            if (gameController.EnemyCount() > 0)
+            {
+                playerBullet = Instantiate(GetCurrentBullet.transform);
+                playerBullet.GetComponent<ObjectPhysics>().playerController = this;
+
+                playerBullet.position = startingPoint;
+                playerBullet.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                playerBullet.gameObject.GetComponent<Rigidbody2D>().gravityScale = 0f;
+                playerBullet.gameObject.GetComponent<Rigidbody2D>().angularVelocity = 0f;
+                LookAtPoint(new Vector3(startingPoint.x + 10f, startingPoint.y, 0));
+            }
+        }
     }
 
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ObjectPhysics : MonoBehaviour
 {
     public PlayerController playerController;
+    public BulletAmmo bulletAmmo;
 
     // Start is called before the first frame update
     void Start()
