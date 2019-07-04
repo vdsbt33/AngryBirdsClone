@@ -2,9 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Bullet", menuName = "Angry Bullets/New Bullet")]
-public class BulletAmmo : ScriptableObject
+public class BulletAmmo : MonoBehaviour
 {
     public string bulletName;
+    public float bulletSkillMultiplier;
+    protected bool usedSkill = false;
 
+    protected Rigidbody2D rb;
+
+    public virtual void UseSkill()
+    {
+        
+    }
 }

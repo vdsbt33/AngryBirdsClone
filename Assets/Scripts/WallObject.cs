@@ -65,10 +65,7 @@ public class WallObject : MonoBehaviour
         foreach (RaycastHit2D hit in hits)
         {
             //print("GameObject name: " + hit.transform.gameObject.name);
-            if (hit.transform.gameObject.name == "PlayerStart")
-            {
-                HitByObject(collision.collider.attachedRigidbody.velocity, hit.rigidbody.mass);
-            }
+            HitByObject(collision.collider.attachedRigidbody.velocity, hit.rigidbody.mass);
         }
         
     }

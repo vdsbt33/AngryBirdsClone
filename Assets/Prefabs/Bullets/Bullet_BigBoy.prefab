@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1419459123}
   - component: {fileID: 6284535021213874056}
   - component: {fileID: 6284535021213874057}
+  - component: {fileID: 612764153413966474}
   m_Layer: 8
   m_Name: Bullet_BigBoy
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6284535021213874052}
-  m_LocalRotation: {x: 0, y: 0, z: 0.1920372, w: 0.9813877}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.1349366, y: 0.23446113, z: 0}
   m_LocalScale: {x: 0.026129514, y: 0.026129514, z: 0.052259028}
   m_Children: []
@@ -111,13 +112,13 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 1
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!114 &6284535021213874057
 MonoBehaviour:
@@ -132,4 +133,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
-  bulletAmmo: {fileID: 11400000, guid: be025a8365d03e244bbb13cb51f0e6e4, type: 2}
+  bulletAmmo: {fileID: 0}
+--- !u!114 &612764153413966474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6284535021213874052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8347eec62937c88409b6d6066f61415c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletName: Big Guy
+  bulletSkillMultiplier: 1

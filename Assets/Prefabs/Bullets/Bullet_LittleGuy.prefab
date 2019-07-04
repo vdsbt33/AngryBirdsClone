@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1927310903527291810}
   - component: {fileID: 1842710581570298585}
   - component: {fileID: 1842710581570298590}
+  - component: {fileID: 5895105687354055701}
   m_Layer: 8
   m_Name: Bullet_LittleGuy
   m_TagString: Untagged
@@ -111,13 +112,13 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 0.7
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!114 &1842710581570298590
 MonoBehaviour:
@@ -132,4 +133,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
-  bulletAmmo: {fileID: 11400000, guid: 89eae3ee311b1ad4094f494ecd52c2f8, type: 2}
+  bulletAmmo: {fileID: 0}
+--- !u!114 &5895105687354055701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842710581570298588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d370b44cceb090d4ea922798d9b44d70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletName: Little Guy
+  bulletSkillMultiplier: 1

@@ -80,6 +80,10 @@ public class PlayerController : MonoBehaviour
             {
                 State = BulletState.Aiming;
                 //print("mouse down");
+            } else if (State == BulletState.Launching)
+            {
+                /* Use skill if bullet is being launched */
+                playerBullet.GetComponent<BulletAmmo>().UseSkill();
             }
         }
         /* Mouse Left (press and hold) */
@@ -145,7 +149,7 @@ public class PlayerController : MonoBehaviour
         if (State == BulletState.Collided) {
             //print(string.Format("Time.time: {0} | waitTime: {1} | resetWaitInSeconds: {2}", Time.time, waitTime, resetWaitInSeconds));
             /* Resets player to waiting after X seconds */
-            if (Time.time == waitTime + resetWaitInSeconds) {
+            if (Time.time >= waitTime + resetWaitInSeconds) {
                 PostShot();
                 State = BulletState.Waiting;
             }
