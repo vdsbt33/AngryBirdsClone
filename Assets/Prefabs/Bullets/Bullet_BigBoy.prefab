@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6284535021213874056}
   - component: {fileID: 6284535021213874057}
   - component: {fileID: 612764153413966474}
+  - component: {fileID: 3530207351979847157}
   m_Layer: 8
   m_Name: Bullet_BigBoy
   m_TagString: Untagged
@@ -72,12 +73,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f9358efeed7fed44bbc77ca114454c94, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fbf166a50a31ed345ade1dc45d5afae4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.2, y: 0.2}
+  m_Size: {x: 8.5, y: 11}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -148,3 +149,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletName: Big Guy
   bulletSkillMultiplier: 1
+--- !u!95 &3530207351979847157
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6284535021213874052}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1581fa10037cac24fb4f551dd8dd7b82, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

@@ -8,7 +8,7 @@ public class Bullet_BigBoy : BulletAmmo
     public override void UseSkill()
     {
         if (!usedSkill) { 
-            rb.velocity = new Vector2(rb.velocity.x, 5f);
+            rb.velocity = new Vector2(rb.velocity.x, (2f * bulletSkillMultiplier));
             usedSkill = true;
         }
 
@@ -18,11 +18,5 @@ public class Bullet_BigBoy : BulletAmmo
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

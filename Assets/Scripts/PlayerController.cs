@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
             } else if (value == BulletState.Collided)
             {
                 waitTime = Time.time;
+                playerBullet.GetComponent<Animator>().SetBool("isLaunching", false);
             }
             _state = value;
         }
@@ -100,8 +101,9 @@ public class PlayerController : MonoBehaviour
                 rb.gravityScale = gravityScale;
                 rb.AddForce(new Vector2((startingPoint.x - rb.position.x) * bulletForceMultiplier, (startingPoint.y - rb.position.y) * bulletForceMultiplier));
                 State = BulletState.Launching;
+                playerBullet.GetComponent<Animator>().SetBool("isLaunching", true);
             }
-            
+
             if (State == BulletState.Waiting) { 
                 LookAtPoint(new Vector3(startingPoint.x + 10f, startingPoint.y, 0));
             }

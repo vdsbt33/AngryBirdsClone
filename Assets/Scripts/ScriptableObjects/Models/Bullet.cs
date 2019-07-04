@@ -5,7 +5,7 @@ using UnityEngine;
 public class BulletAmmo : MonoBehaviour
 {
     public string bulletName;
-    public float bulletSkillMultiplier;
+    public float bulletSkillMultiplier = 1f;
     protected bool usedSkill = false;
 
     protected Rigidbody2D rb;

@@ -9,7 +9,7 @@ public class Bullet_LittleGuy : BulletAmmo
     {
         if (!usedSkill)
         {
-            rb.velocity = new Vector2(rb.velocity.x + 3f, rb.velocity.y);
+            rb.velocity = new Vector2(rb.velocity.x + (2f * bulletSkillMultiplier), rb.velocity.y);
             usedSkill = true;
         }
     }
@@ -18,11 +18,5 @@ public class Bullet_LittleGuy : BulletAmmo
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
