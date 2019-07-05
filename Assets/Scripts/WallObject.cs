@@ -12,6 +12,15 @@ public class WallObject : MonoBehaviour
     }
     public MaterialType materialType;
 
+    public enum FreezeType
+    { 
+        Normal = 0,
+        FrozenPermanently = 1,
+        FrozenUntilCollided = 2
+    }
+
+    public FreezeType freezeType;
+
     private int _initialHealth
     {
         get
@@ -60,6 +69,7 @@ public class WallObject : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+
         RaycastHit2D[] hits = Physics2D.RaycastAll(collision.collider.transform.position, Vector2.zero, 0f);
         //print("Collider name: " + collision.collider.name + " |otherCollider name: " + collision.otherCollider.name);
         foreach (RaycastHit2D hit in hits)
