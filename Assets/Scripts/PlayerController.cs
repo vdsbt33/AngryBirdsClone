@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     public List<GameObject> bulletList;
     private int startingProjectileCount;
 
+    public bool enablePlayerControl = true;
+
     private GameObject GetCurrentBullet
     {
         get
@@ -71,47 +73,53 @@ public class PlayerController : MonoBehaviour
     /* Gets player click/hold */
     void Update()
     {
-        if (gameController.EnemyCount() == 0) {
-            return;
-        }
-        /* Mouse Left Down (1 frame) */
-        if (Input.GetMouseButtonDown(0))
+        if (enablePlayerControl)
         {
-            if (ClickedBullet() && State == BulletState.Waiting)
+            if (gameController.EnemyCount() == 0)
             {
-                State = BulletState.Aiming;
-                //print("mouse down");
-            } else if (State == BulletState.Launching)
-            {
-                /* Use skill if bullet is being launched */
-                playerBullet.GetComponent<BulletAmmo>().UseSkill();
+                return;
             }
-        }
-        /* Mouse Left (press and hold) */
-        else if (Input.GetMouseButton(0))
-        {
+            /* Mouse Left Down (1 frame) */
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (ClickedBullet() && State == BulletState.Waiting)
+                {
+                    State = BulletState.Aiming;
+                    //print("mouse down");
+                }
+                else if (State == BulletState.Launching)
+                {
+                    /* Use skill if bullet is being launched */
+                    playerBullet.GetComponent<BulletAmmo>().UseSkill();
+                }
+            }
+            /* Mouse Left (press and hold) */
+            else if (Input.GetMouseButton(0))
+            {
 
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            /* If dragging, launches bullet */
-            if (State == BulletState.Aiming)
+            }
+            if (Input.GetMouseButtonUp(0))
             {
-                Rigidbody2D rb = playerBullet.GetComponentInParent<Rigidbody2D>();
-                rb.gravityScale = gravityScale;
-                rb.AddForce(new Vector2((startingPoint.x - rb.position.x) * bulletForceMultiplier, (startingPoint.y - rb.position.y) * bulletForceMultiplier));
-                State = BulletState.Launching;
-                playerBullet.GetComponent<Animator>().SetBool("isLaunching", true);
-            }
+                /* If dragging, launches bullet */
+                if (State == BulletState.Aiming)
+                {
+                    Rigidbody2D rb = playerBullet.GetComponentInParent<Rigidbody2D>();
+                    rb.gravityScale = gravityScale;
+                    rb.AddForce(new Vector2((startingPoint.x - rb.position.x) * bulletForceMultiplier, (startingPoint.y - rb.position.y) * bulletForceMultiplier));
+                    State = BulletState.Launching;
+                    playerBullet.GetComponent<Animator>().SetBool("isLaunching", true);
+                }
 
-            if (State == BulletState.Waiting) { 
-                LookAtPoint(new Vector3(startingPoint.x + 10f, startingPoint.y, 0));
+                if (State == BulletState.Waiting)
+                {
+                    LookAtPoint(new Vector3(startingPoint.x + 10f, startingPoint.y, 0));
+                }
+                //print("mouse up");
             }
-            //print("mouse up");
-        }
-        if (Input.GetKey(KeyCode.R))
-        {
-            SceneManager.LoadScene("TestingScene");
+            if (Input.GetKey(KeyCode.R))
+            {
+                SceneManager.LoadScene("TestingScene");
+            }
         }
     }
 
@@ -138,29 +146,34 @@ public class PlayerController : MonoBehaviour
     float waitTime = 0f;
     void FixedUpdate()
     {
-        gameObject.GetComponent<DebugController>().SetDebugText("Player State: " + State);
-        if (State == BulletState.Aiming)
+        if (enablePlayerControl)
         {
-            var position = Vector2.Lerp(playerBullet.position, GetMousePosition(), dragSmoothness * Time.deltaTime);
-            var allowedPos = position - startingPoint;
-            //playerBullet.position = new Vector2(Mathf.Clamp(position.x, startingPoint.x - mouseDragRadius, startingPoint.x + mouseDragRadius), Mathf.Clamp(position.y, startingPoint.y - mouseDragRadius, startingPoint.y + mouseDragRadius));
-            playerBullet.position = startingPoint + Vector2.ClampMagnitude(allowedPos, mouseDragRadius);
-            LookAtPoint(startingPoint);
-            return;
-        }
-        if (State == BulletState.Collided) {
-            //print(string.Format("Time.time: {0} | waitTime: {1} | resetWaitInSeconds: {2}", Time.time, waitTime, resetWaitInSeconds));
-            /* Resets player to waiting after X seconds */
-            if (Time.time >= waitTime + resetWaitInSeconds) {
-                PostShot();
-                State = BulletState.Waiting;
+            gameObject.GetComponent<DebugController>().SetDebugText("Player State: " + State);
+            if (State == BulletState.Aiming)
+            {
+                var position = Vector2.Lerp(playerBullet.position, GetMousePosition(), dragSmoothness * Time.deltaTime);
+                var allowedPos = position - startingPoint;
+                //playerBullet.position = new Vector2(Mathf.Clamp(position.x, startingPoint.x - mouseDragRadius, startingPoint.x + mouseDragRadius), Mathf.Clamp(position.y, startingPoint.y - mouseDragRadius, startingPoint.y + mouseDragRadius));
+                playerBullet.position = startingPoint + Vector2.ClampMagnitude(allowedPos, mouseDragRadius);
+                LookAtPoint(startingPoint);
+                return;
             }
-        }
-        /* Makes bullet rotate to direction of movement */
-        else if (State == BulletState.Launching)
-        {
-            /* Stops launching and rotation if player collides */
-            LookAtPoint(new Vector2(playerBullet.transform.position.x, playerBullet.transform.position.y) + playerBullet.gameObject.GetComponent<Rigidbody2D>().velocity);
+            if (State == BulletState.Collided)
+            {
+                //print(string.Format("Time.time: {0} | waitTime: {1} | resetWaitInSeconds: {2}", Time.time, waitTime, resetWaitInSeconds));
+                /* Resets player to waiting after X seconds */
+                if (Time.time >= waitTime + resetWaitInSeconds)
+                {
+                    PostShot();
+                    State = BulletState.Waiting;
+                }
+            }
+            /* Makes bullet rotate to direction of movement */
+            else if (State == BulletState.Launching)
+            {
+                /* Stops launching and rotation if player collides */
+                LookAtPoint(new Vector2(playerBullet.transform.position.x, playerBullet.transform.position.y) + playerBullet.gameObject.GetComponent<Rigidbody2D>().velocity);
+            }
         }
         return;
     }

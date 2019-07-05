@@ -24,6 +24,9 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    /* The minimum amount of velocity needed until the target takes damage */
+    public float damageMinimumVelocityMagnitude = 0.3f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,20 +35,20 @@ public class EnemyController : MonoBehaviour
     }
 
     /* Called when an object hits this */
-    public void HitByObject(Vector2 velocity, float objectMass)
+    public void HitByObject(Vector2 objectVelocity, float objectMass)
     {
-        CurrentHealth -= (velocity.x * 7) * objectMass;
+        print(string.Format("Previous HP: {0} | New HP: {1} | Total DMG: {2}", CurrentHealth, CurrentHealth - ((objectMass * objectVelocity).magnitude + (GetComponent<Rigidbody2D>().mass * GetComponent<Rigidbody2D>().velocity).magnitude) * 3, ((objectMass * objectVelocity).magnitude + (GetComponent<Rigidbody2D>().mass * GetComponent<Rigidbody2D>().velocity).magnitude) * 3));
+        CurrentHealth -= ((objectMass * objectVelocity).magnitude + (GetComponent<Rigidbody2D>().mass * GetComponent<Rigidbody2D>().velocity).magnitude) * 3;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (GetComponent<Rigidbody2D>().velocity != Vector2.zero || collision.collider.GetComponent<Rigidbody2D>().velocity != Vector2.zero)
+        if (GetComponent<Rigidbody2D>().velocity.magnitude > damageMinimumVelocityMagnitude || collision.collider.GetComponent<Rigidbody2D>().velocity.magnitude > damageMinimumVelocityMagnitude)
         {
             RaycastHit2D[] hits = Physics2D.RaycastAll(collision.collider.transform.position, Vector2.zero, 0f);
 
             foreach (RaycastHit2D hit in hits)
             {
-            
                 HitByObject(collision.collider.attachedRigidbody.velocity, hit.rigidbody.mass);
             }
         }
