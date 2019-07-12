@@ -14,9 +14,9 @@ TagManager:
   - 
   - 
   - SelectedBullet
-  - 
-  - 
-  - 
+  - DestructibleWall
+  - Ground
+  - MainObjective
   - 
   - 
   - 
